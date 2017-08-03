@@ -1,0 +1,70 @@
+<html>
+<body>
+<script src="/socket.io/socket.io.js "></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="handlebars-v4.0.10.js"></script> 
+<script>
+var socket= io();         
+socket.on('connect',()=>{
+console.log("connected");          
+getposition();    
+  function getposition(){
+      if(!navigator.geolocation)
+      {
+          console.log("mwkmvlw");
+      }
+      else
+          {              
+           navigator.geolocation.getCurrentPosition((data)=>{
+             console.log(data.coords.latitude);
+           var position=
+               {
+                   latitude:data.coords.latitude,
+                   longitude:data.coords.longitude
+               }
+               
+         },()=>{
+               console.log("not possible");
+                 
+               });          
+              
+          }
+  }  
+    $("#submit").on('click',()=>{
+        var val=$("#msg").val();
+     
+    socket.emit('message1',val);
+    });
+    socket.on('message2',(data)=>{
+        
+    console.log(data+'message2');
+     });
+     socket.on('message3',(data)=>{
+   var myInfo = "<p>My name is {{name}} and I live at {{street}} in {{city}}, {{state}}</p>";
+  var template = Handlebars.compile(myInfo);
+
+ var data = template({name: "Derek", street: "123 Main St", city: "Pittsburgh", state: "PA"});
+ document.getElementById('derekData').innerHTML += data;
+$('#paul').html(template); 
+  </script>               
+    }); 
+    });
+
+    <style>
+.box{
+display:block; 
+width:40px;
+border-color:red;
+border-style:solid;
+height:40px; 
+}   
+</style>    
+<h1>hey{{name}}</h1>
+<h2 id="h2"></h2>
+<input id="msg"type="text">
+<div class="box"></div>    
+<button id="submit">submit</button>
+<button id="follow">follow</button>
+<div id="paul"></div>    
+</body>
+</html>
