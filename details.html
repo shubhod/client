@@ -1,0 +1,93 @@
+<html>
+<link rel="stylesheet" type="text/css" href="details.css">
+<link href="https://fonts.googleapis.com/css?family=Work+Sans:300" rel="stylesheet">		
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+<link rel = "stylesheet" type = "text/css"  href="font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="css\font-awesome.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">		
+<body style="background-color:">
+<ul id="progressbar">
+<strong><li class="active">AccountSetup</li>
+<li>SocialProfiles</li>
+<li>PersonalDetails</li></strong>
+</ul>	
+<center><div class="box">
+<div class="box1">	
+<h1 style="color:#6F6666; font-family: 'Work Sans', sans-serif; ">what you are</h1>
+<form class="occupation" action="">
+<center><strong><input style="margin-left: -100px; margin-bottom:10px; " type="radio" name="work" value="student" checked>Student<br>
+  <input type="radio" style="margin-left: -92px;margin-bottom:10px;" name="work" value="working">Working<br>
+  <input type="radio" style="margin-left: -115px;" name="work" value="none">None</strong> </center>
+  <button id="m" class="next">Submit</button>	
+</form>	
+</div>
+<form class="location" method="post" action="432423">
+<div class="studentbox" class="box">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input id="studyingAt"class="locationclass" type="text" placeholder="&#xf0b1; StudyingAt.."><br><br>
+<input class="locationclass" type="text" placeholder="&#xf041; Lives in.."><br><br>
+<input class="locationclass" type="text" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>		
+</div>
+<div class="workingbox">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input id="studyingAt"class="locationclass" name="workingaAt" type="text" placeholder="&#xf0b1; WorkingAt.."><br><br>	
+<input class="locationclass" type="text" name="livesin" placeholder="&#xf041; Lives in.."><br><br>
+<input class="locationclass" type="text" name="hometown" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>			
+</div>	
+<div class="none">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input class="locationclass" type="text" name="livesin" placeholder="&#xf041; Lives in.."><br><br>
+<input class="locationclass" type="text" name="hometown" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>		
+</div>		
+</form>		
+<div class="profilepic">
+<form class="profilepic">
+<center><i id="userdummy" class="fa fa-user-circle-o" aria-hidden="true"></i></center>
+<button class="next">upload</button>
+<button class="skip">skip</button>	
+</form>	
+</div>	
+</div></center>
+<script>	
+$('.occupation').submit((e)=>{
+e.preventDefault();	
+$('.box1').hide();	
+var value=$('input[type=radio]:checked').val();	
+if(value=='student')
+	{
+	console.log(value);	
+	$('.studentbox').show();
+	$('.studentbox').addClass('animated fadeIn');
+	
+	
+	}
+if(value=='working')
+	{ 
+	  console.log(value);	     
+	  $('.workingbox').show();
+	  $('.workingbox').addClass('animated fadeIn');	
+		
+	}
+if(value=="none")
+	{
+		$('.none').show();
+	          $('.none').addClass('animated fadeIn');	
+	}
+
+});
+$('.location button').on('click',()=>{
+$('.location').submit((e)=>{
+e.preventDefault();	
+});		
+$('.location').hide();	
+$('.profilepic').show();
+$('.profilepic').addClass('animated fadeIn');	
+});	
+</script>	
+</body>
+</html>
