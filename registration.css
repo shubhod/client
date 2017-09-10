@@ -1,0 +1,134 @@
+body
+{
+	background-image: url('reg5.jpg');
+         background-attachment: fixed;     
+
+	
+	background-repeat: no-repeat;
+}
+.box1
+{
+ height:430px;
+ width: 335px;
+ background:#ffffff;
+ box-shadow: -13px -15px  65px  0px #ff5466 ;
+border-radius: 5px; 	
+margin-top: -150px;
+position: absolute;	
+padding-top:70px;
+color:#ff5466;
+font-family: 'Open Sans', sans-serif;
+margin-left: 500px;	
+}
+
+.box
+{
+ height:250px;
+ width: 550px;
+ background:#5bd1b7;
+/* box-shadow: 0px 0px  8px  1px #c5d5cb;*/
+ border-radius: 4px; 	
+ margin-top: 500px;
+ padding-top:70px; 
+ color:#ff5466;
+ font-family: 'Open Sans', sans-serif;
+ margin-left: 700px;
+ 
+}
+#logo
+{
+  font-size: 60px;
+  color: white;
+font-family: 'Roboto Slab', serif;
+  margin-top: 150px;
+  margin-left: 10px;
+  
+}
+i
+{
+	 font-family: 'FontAwesome';
+	 -webkit-animation-duration: 200s;
+}
+#afterlogo
+{
+    font-family: 'Roboto Slab', serif;
+    color: #ecf6fd;
+    margin-left: 15px;	
+}
+
+.signup
+{
+ border: 2px solid #dbe3e9;
+ height: 30px;
+ border-radius: 3px;	
+	 
+	
+}
+
+.loginbutton{
+ background-color:#5bd1b7;
+ height: 30px;
+ width: 70px;
+ border-radius: 2px;	
+ border: 1px solid #5bd1b7;
+ box-shadow: 0px 0px  2px  1px #c5d5cb;	
+ margin-top: -5px;
+ color: whitesmoke;
+ font-size: 13px;
+ font-family: 'Work Sans', sans-serif;
+/* text-shadow: 0px 0px 3px white;	*/
+-vendor-animation-duration: 1s;	
+}
+
+.signinbutton
+{
+ background-color:#D8A597;
+ height: 30px;
+ width: 70px;
+ border-radius: 2px;	
+ border: 1px solid #D8A597;
+ box-shadow: 0px 0px  2px  1px #D8A597;	
+ margin-top:-5px;
+ color: whitesmoke;
+ font-size: 13px; font-family: 'Work Sans', sans-serif;
+/* text-shadow: 0px 0px 3px white;	*/
+  	
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #dbe3e9;
+  font-weight: 5px;
+  font-family: 'FontAwesome','Josefin Sans', sans-serif;	
+}
+
+.loginbox
+{
+	display: none;
+	-vendor-animation-delay: 0.05ms;
+}
+
+#logInput          	     
+{
+	margin-top: 25px;
+	
+}
+.loginbox input
+{
+	width: 230px;
+}
+
+.sighnupform
+{
+	
+}
+.registrationBox input
+{
+width: 230px;	
+}
+
+
+
+
+
+
+
+
