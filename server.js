@@ -190,7 +190,8 @@ users[socket.username]=socket;
 	var count=0; 
 	if(userdetail)
 	{
-	user.findOne({username:userdetail.username}).then((docs)=>{	
+	user.findOne({username:userdetail.username}).then((docs)=>{
+	var dost=docs;	
 	if(docs )
 	 { 
 	   if(docs.displaypic)
@@ -198,7 +199,7 @@ users[socket.username]=socket;
 	  console.log("user route connected");
             socket.emit('displaypic',docs.displaypic);   
 	  }
-            socket.emit('username',userdetail.username);	   
+            socket.emit('username',{username:userdetail.username,name:docs.name});	   
           
 		        
 	 }
@@ -206,27 +207,68 @@ users[socket.username]=socket;
 		     {
 			     console.log("displaypic not found");
 		     }
-			   if((docs.workplace)!='undefined')
+                                function loop(n,docs,y)
+		              {
+				   
+				  for(i=0;i<n;i++)
+				   {
+					
+					   for(j=0;j<docs.length;j++)
+						   {
+							if(y[i].username===docs[j].username)
+								{
+									docs.splice(j,1);
+								}
+						   }
+				   }
+				     
+	                            		
+      			     }
+		            
+		              function resul(docs){
+		              if(dost.friends)		     
+			    { if(dost.friends.length>0)
+			      {        loop(dost.friends.length,docs,dost.friends); 
+				      console.log("friends");
+				  
+				      
+			      }
+			     console.log("friendso"+dost);
+			    }
+			       if(dost.friendrequests)	     
+			       {if(dost.friendrequests.length>0)
+				{ 
+				   loop(dost.friendrequests.length,docs,dost.friendrequests);	
+				       console.log("friendreq");	
+				}
+			       console.log(docs.friendrequests);	
+			       }
+			       if(dost.requestlist)	     
+			     {  if(dost.requestlist.length>0)
+				{ 
+				   loop(dost.requestlist.length,docs,dost.requestlist);
+			               console.log("friendszoooooooooooooooo");		
+					
+				}	
+				     }
+	                       var result=docs.filter((val)=>{		     
+                                return val.username!=userdetail.username					          
+                                 }).map((docs)=>{return x={username:docs.username,displaypic:docs.displaypic}});
+//			         console.log(JSON.stringify(result)+"result");   
+			      return result;	     
+                                 };
+		
+		
+		
+			   if(docs.workplace)
 		     {  
-                            var workplaceid=docs.workplace.id;
-			 user.find({'workplace.id':workplaceid}).then((docs)=>{
+                                 var workplaceid=docs.workplace.id;
+			      user.find({'workplace.id':workplaceid}).then((docs)=>{
 				if(docs)
-				{       
-					 var workplace=[];
-				 	 var result=docs.filter((val)=>{return val.username!=userdetail.username});
-					 
-					for(i=0;i<result.length;i++)
-					{
-					var x={
-					 username:result[i].username,
-					 displaypic:result[i].displaypic	
-					}	
-					workplace.push(x);
-
-					}
-					 workplace.push("workplace");
-					 console.log("workplace:"+" "+workplace);
-                                              socket.emit('friendSuggestions',workplace);
+				{        
+				 	 var result=resul(docs);
+					 result.push("workplace");
+                                              socket.emit('friendSuggestions',result);
 					
 					
 					
@@ -240,21 +282,10 @@ users[socket.username]=socket;
 		    user.find({'livesIn.id':docs.livesIn.id}).then((docs)=>{
 			    if(docs!=null)
 				    {     
-					var workplac=[];
-				 	var result=docs.filter((val)=>{return val.username!=userdetail.username});
-					
-					for(i=0;i<result.length;i++)
-					{
-					var y={
-					 username:result[i].username,
-					 displaypic:result[i].displaypic	
-					}	
-					workplac.push(y);
-			
-					}
-					 workplac.push("livesin");
-					  console.log("livesin:"+"  "+workplac);  
-                                              socket.emit('friendSuggestions',workplac);	
+					 var result=resul(docs);
+					 result.push("workplace");
+                                              socket.emit('friendSuggestions',result);
+						
 					  
 				    }
 			    else
@@ -262,15 +293,19 @@ users[socket.username]=socket;
 					    console.log("not found");
 				    }
 		    	    
-		     },(e)=>{console.log(e);});			
+		     },(e)=>{console.log(e);});
 		
+	socket.emit('frequests',docs.friendrequests);			
 });	
 	}
 	 
 	socket.on('friendrequest',(friend)=>{
+		
 	console.log("user"+friend);
-	users[friend.to].emit('requests',friend.from);	
-	user.findOneAndUpdate({username:friend.to},{$push:{friendrequests:{name:friend.from}}},{upsert:true,new:true}).then((docs)=>{
+	if(friend.to in users)	
+	{users[friend.to].emit('immediateRequests',friend);}	
+	user.findOneAndUpdate({username:friend.from},{$push:{requestlist:{username:friend.to}}},{upsert:true,new:true}).then((docs)=>{if(docs){console.log("found")}},(e)=>{console.log(e)});	
+	user.findOneAndUpdate({username:friend.to},{$push:{friendrequests:{username:friend.from,displaypic:friend.pic,name:friend.sender}}},{upsert:true,new:true}).then((docs)=>{
 	if(docs)
 	{	
 	  console.log(docs);
