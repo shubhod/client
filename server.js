@@ -1,5 +1,6 @@
 var {io}=require('./express.js');
 var path=require('path');
+const crypto = require("crypto");
 var fs=require('fs');
 var hbs=require('hbs');
 var multer =require('multer');
@@ -9,16 +10,16 @@ var {user}=require('./database');
 var express= require('express');
 var {app}=require('./express.js');
 var userdetail;
+var crypt=[];
+var count=0;
+var post;
 var users={};
-//app.set('views',path.join(__dirname,'views'));
-
 app.use(express.static(__dirname+'/public'));
 app.set('view engine','hbs'); 
 var bodyParser = require('body-parser');
 app.use(session({
   cookieName: 'session',
-  secret: 'random_string_goes_here',
- 
+  secret: 'random_string_goes_here' 
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 var storage=multer.diskStorage({
@@ -67,7 +68,7 @@ user.findOne({username:req.body.username}).then((docs)=>{
 		{
 			
 		req.session.user1={username:req.body.username};
-		console.log("userdetail"+req.session.user1);	
+		console.log("userdetail"+req.session.user1 );	
 		res.redirect('/user1');	
 		}
 	else{
@@ -79,7 +80,7 @@ user.findOne({username:req.body.username}).then((docs)=>{
 app.get('/',(req,res)=>{
 res.sendFile(__dirname+'/registration.html');//sending registration page
 });
-app.use(function(req,res,next){
+app.use(function(req,res,next){	
 userdetail=req.session.user1;	
 next();	
 });
@@ -125,11 +126,32 @@ app.use(function(req,res,next){
   }
 next();        
  });
-app.get('/user1',function(req, res){	
+app.get('/user1',function(req, res){
+post=0;	
 res.sendFile(__dirname+'/user.html');
-console.log("user1"+req.session);
-				
-});      	  
+console.log("user1"+req.session);				
+});
+//app.post('/post',(req,res)=>{
+//res.send("oou");	
+//const id = crypto.randomBytes(16).toString("hex");
+//crypt.push(id);
+//console.log(crypt);	
+//if(crypt.length>1)
+//	{
+//		for(i=0;i<crypt.length;i++)
+//	{
+//	                  if(crypt[i]==id)
+//				{
+//					
+//					
+//				}
+//	}
+//		
+//	}
+//var filename=id +'.txt';
+//var read= fs.writeFileSync(filename,req.body.sub);
+//var post=1;	
+//});
              app.get('/profile',function(req,res){		
              res.sendFile(__dirname + "/profile.html");
 		    
@@ -137,16 +159,24 @@ console.log("user1"+req.session);
              });
                           
 
-                           
-io.on('connection',(socket)=>{ 
+                       
+io.on('connection',(socket)=>{
+    	
 if(userdetail)
-{
+{ 
 socket.username=userdetail.username;	   
-users[socket.username]=socket;	 	 
-}  	   
-   socket.on('displaypic',(data)=>{	
-   console.log(data);	   
-   user.findOneAndUpdate({username:userdetail.username},{displaypic:data},{upsert:true,new:true}).then((docs)=>{
+users[socket.username]=socket;
+var dir = './'+userdetail.username;
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}    
+socket.on('displaypic',(data)=>{
+    var x;
+    x=dir+"/"+userdetail.username+".txt";
+    console.log(x);
+    fs.writeFileSync(x,data);	   	   
+    user.findOneAndUpdate({username:userdetail.username},{displaypic:x},{upsert:true,new:true}).then((docs)=>{
 	if(docs)
 		{
 			console.log("display pic updation"+docs);
@@ -156,9 +186,10 @@ users[socket.username]=socket;
 		   {
 			   console.log("not updated");
 		   }
-});  
-   	   
-});
+});     	   
+});	
+}  	   
+ 
 	 socket.on('workplace',(workplace)=>{
 	 console.log(workplace.name);		
 	user.findOneAndUpdate({username:userdetail.username},
@@ -190,14 +221,15 @@ users[socket.username]=socket;
 	var count=0; 
 	if(userdetail)
 	{
-	user.findOne({username:userdetail.username}).then((docs)=>{
-	var dost=docs;	
+	user.findOne({username:userdetail.username}).then((docs)=>{         
+	var dost=docs;            
 	if(docs )
 	 { 
 	   if(docs.displaypic)
-	  {
-	  console.log("user route connected");
-            socket.emit('displaypic',docs.displaypic);   
+	  {   
+               var fiel=fs.readFileSync(docs.displaypic,'utf8');
+	      console.log("user route connected");	  
+               socket.emit('displaypic',fiel);   
 	  }
             socket.emit('username',{username:userdetail.username,name:docs.name});	   
           
@@ -254,7 +286,7 @@ users[socket.username]=socket;
 	                       var result=docs.filter((val)=>{		     
                                 return val.username!=userdetail.username					          
                                  }).map((docs)=>{return x={username:docs.username,displaypic:docs.displaypic}});
-//			         console.log(JSON.stringify(result)+"result");   
+//			       
 			      return result;	     
                                  };
 		
@@ -292,20 +324,244 @@ users[socket.username]=socket;
 				    {
 					    console.log("not found");
 				    }
-		    	    
-		     },(e)=>{console.log(e);});
-		
-	socket.emit('frequests',docs.friendrequests);			
-});	
+		  },(e)=>{console.log(e);});
+
+var count=0;	
+socket.on('giveme',(i)=>{
+    
+if(count==0)
+	{
+	          
+		 var arr=[];	
+if(docs.friendrequests.length<8 && docs.friendrequests.length>0 )
+	{        
+		loader(docs.friendrequests.length,arr);
+		socket.emit('frequests',arr);
 	}
-	 
-	socket.on('friendrequest',(friend)=>{
+	
+if(docs.friendrequests.length>=8 )
+	{
+	     loader(8,arr);
+	     console.log(arr);
+	     	
+	     pos=8;	
 		
+	}
+	count=1;	
+	}
+});
+var pos;			
+socket.on('giveme1',()=>{    
+console.log('positionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'+pos);	
+if(docs.friendrequests.length>0)
+{  
+var arr=[];	
+var diff=docs.friendrequests.length-pos;	
+if(diff<4)
+	{      
+		if(docs.friendrequests.length>pos)
+		   {  
+		       loader1(pos,docs.friendrequests.length);	   
+		       socket.emit('prequests',arr,pos);
+		        pos=docs.friendrequests.length;	   
+		        console.log('it was called'+pos);	   
+		   }
+	}
+else
+	{        var target=pos+4;
+	         if(pos<docs.friendrequests.length)
+		{
+		loader1(pos,target);
+	         pos=target;
+		console.log("hey"+pos)	
+	         socket.emit('prequests',arr,pos-4);
+		
+		}
+	} 	
+       
+	function loader1(j,m){
+             console.log("friendrequestsssssssssss"+docs.friendrequests);
+	   for(i=j;i<m;i++)
+		   {      
+                         
+                            
+			 if(docs.friendrequests[i].displaypic)
+		                           {  
+			                  var x=fs.readFileSync(docs.friendrequests[i].displaypic,'utf8')
+                                           
+					}
+	                                   var obj={
+			                           name:docs.friendrequests[i].name,
+			                           username:docs.friendrequests[i].username,
+			                       	displaypic:x
+					       }
+				          arr.push(obj);
+			
+		            
+			  
+		   }
+	                                  
+	       
+       }	
+
+}	
+});
+		
+function loader(n,arr)
+{
+	for(i=0;i<n;i++)
+{
+	if(docs.friendrequests[i].displaypic)
+             
+		{        
+                          
+                           console.log("hiiiiiiiiiiiiiiiiiii"+docs.friendrequests[i].displaypic);
+		         var m=docs.friendrequests[i].displaypic;
+			var x=fs.readFileSync(docs.friendrequests[i].displaypic,'utf8');
+			var obj={
+			name:docs.friendrequests[i].name,
+			username:docs.friendrequests[i].username,
+			displaypic:x
+			}
+                           arr.push(obj);
+	              
+			
+		}
+}
+}	
+socket.on('acceptrequests',(details)=>{
+console.log(details);    
+docs.friends.push({username:details.to});
+docs.friendrequests.splice({username:details.to});
+user.findOneAndUpdate({username:details.to},{$pull:{requestlist:{username:details.from}}},{new:true}).then((docs)=>{
+    if(docs){console.log(docs);}else{}
+},(err)=>{
+    console.log(err);
+});     
+docs.save().then((docs)=>{
+	if(docs)
+		{
+			console.log("saved");
+		}
+},(err)=>{console.log(err);});
+user.findOneAndUpdate({username:details.to},{$push:{friends:{username:details.from}}}).then((docs)=>{
+	if(docs){console.log("updated")}
+},(err)=>{
+ console.log(err);	
+});	
+});
+socket.on('file',(data)=>{
+    var filePath;
+    var contentPath;
+    var dir="./"+userdetail.username+"/";
+    var file=dir+userdetail.username+"log.txt";
+         function filewriter()
+               {
+               var read=fs.readFileSync(file,'utf8');
+               read=parseInt(read);
+               contentRead=read+1;
+               contentName=userdetail.username+"content"+contentRead+".txt";
+               contentPath=dir+contentName;
+               docs.myposts.push({content:contentPath});      
+               fs.writeFileSync(contentPath,data.content);   
+               for(i=0;i<data.file.length;i++)
+                   {  read=read+1;
+                      fileName=userdetail.username+"file"+read+".txt";           
+                      filePath=dir+fileName;
+                      fs.writeFileSync(filePath,data.file[i]);
+                      docs.myposts[docs.myposts.length-1].file.push(filePath);
+                       docs.friends.forEach((v)=>{
+                      console.log("hoooooo"+v);  
+                      user.findOne({username:v.username}).then((docs)=>{
+                      docs.posts.push({content:contentPath});      
+                      docs.posts[docs.posts.length-1].file.push(filePath);
+                      docs.save((docs)=>{if(docs){console.log("yooooo")}},(err)=>{console.log(err)});
+                          
+                      });  
+                      });
+                       
+                   }
+                  
+                 
+                docs.save((docs)=>{if(docs){console.log("yooooo")}},(err)=>{console.log(err)});   
+               fs.writeFileSync(file,read);
+                  
+               }
+    fs.exists(file,function(exists){
+       if(exists)
+           {
+                filewriter();
+               
+           }
+        else
+            {
+               fs.writeFileSync(file,"0");
+                filewriter();
+            }
+    });
+//    var read=fs.readFileSync(file,'utf8');
+//    if(read=="")
+//        {
+//            read=1;
+//            
+//        }
+//    else
+//        {
+//    read=parseInt(read);
+//    read=read+1;
+//    console.log(read);	
+//        }
+//fs.writeFileSync('count.txt',read);	
+//console.log(data);	
+//var filename=id +'.txt';
+//return filename;	
+});
+socket.on('showposts',(value)=>{
+    
+ var postarr=[];
+ var readypost={};       
+ if(docs.posts)
+     {
+  var count=4;         
+  while(count) 
+  {
+        if(docs.posts.length<=0)
+          {
+           return;   
+          }
+ var x=docs.posts.pop(); 
+ docs.queuepost.unshift(x); 
+    console.log(x);
+ var content=fs.readFileSync(x.content,'utf8');
+ readypost.content=content;    
+  for(i=0;i<x.file.length;i++)
+      {   var file2=fs.readFileSync(x.file[i],'utf8');
+          postarr.push(file2);
+      }
+    readypost.postarr=postarr;
+    console.log("readypostsssss"+JSON.stringify(readypost));
+  docs.save((docs)=>{
+  console.log("done")    
+  },(err)=>{
+      console.log(err);
+  });
+  }
+  count--;   
+    }
+    else
+        {
+            
+        }
+});             
+});		
+}				 
+	socket.on('friendrequest',(friend)=>{	
 	console.log("user"+friend);
+	var fiel="./"+friend.from+"/"+friend.from+".txt";	
 	if(friend.to in users)	
 	{users[friend.to].emit('immediateRequests',friend);}	
 	user.findOneAndUpdate({username:friend.from},{$push:{requestlist:{username:friend.to}}},{upsert:true,new:true}).then((docs)=>{if(docs){console.log("found")}},(e)=>{console.log(e)});	
-	user.findOneAndUpdate({username:friend.to},{$push:{friendrequests:{username:friend.from,displaypic:friend.pic,name:friend.sender}}},{upsert:true,new:true}).then((docs)=>{
+	user.findOneAndUpdate({username:friend.to},{$push:{friendrequests:{username:friend.from,displaypic:fiel,name:friend.sender}}},{upsert:true,new:true}).then((docs)=>{
 	if(docs)
 	{	
 	  console.log(docs);
@@ -349,7 +605,6 @@ users[socket.username]=socket;
 //          console.log("disconnect");
 //});     
 //});
-
 
 //           user.findOne({name: username}).then((docs)=>{
 //           docs.followers.push({name:data.name});
