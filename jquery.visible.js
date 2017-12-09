@@ -74,7 +74,7 @@
             if(direction === 'both')
                 return !!clientSize && ((compareBottom <= viewBottom) && (compareTop >= viewTop)) && ((compareRight <= viewRight) && (compareLeft >= viewLeft));
             else if(direction === 'vertical')
-                return !!clientSize && ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+                return !!clientSize && ((compareBottom < viewBottom) && (compareTop > viewTop));
             else if(direction === 'horizontal')
                 return !!clientSize && ((compareRight <= viewRight) && (compareLeft >= viewLeft));
         }
