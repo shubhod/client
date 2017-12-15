@@ -4,16 +4,23 @@ const crypto = require("crypto");
 var fs=require('fs');
 var hbs=require('hbs');
 var multer =require('multer');
+var myArgs = process.argv.slice(2);
 var session = require("client-sessions");
 var upload=multer({dest:'public/uploads/'});
 var {user}=require('./database');
+var {friend}=require('./database');
 var express= require('express');
 var {app}=require('./express.js');
 var userdetail;
 var crypt=[];
-var count=0;
+var {flag}=require('./database');
 var post;
 var users={};
+var redis=require('redis');
+var client=redis.createClient();
+         client.on('connect',()=>{
+         console.log("connected to redis");    
+         });
 app.use(express.static(__dirname+'/public'));
 app.set('view engine','hbs'); 
 var bodyParser = require('body-parser');
@@ -38,9 +45,8 @@ app.post('/api/photo',function(req,res){
 app.get('/form',(req,res)=>{
 res.sendFile(__dirname+'/from.html');	
 });
-
 app.get('/form',(req,res)=>{
-res.sendFile(__dirname+'/from.html');	
+res.sendFile(__dirname+'/from.html');
 });
 app.post('/signin',(req,res)=>{ //saving the userdetails to the database from the registration page
    console.log(req.body);	
@@ -49,8 +55,9 @@ app.post('/signin',(req,res)=>{ //saving the userdetails to the database from th
     email:req.body.email,
     username:req.body.username,    	    
     password: req.body.password,
-    phone:req.body.phone   	    
+    phone:req.body.phone 
 });
+    
    req.session.user1=req.body;
    console.log(req.body);	
    newuser.save(function (err) {
@@ -59,8 +66,16 @@ app.post('/signin',(req,res)=>{ //saving the userdetails to the database from th
   } else {
     console.log('meow');
   }
-});
-  res.redirect('/details');	
+}); 
+client.set(req.body.username,req.body.username,(err,rply)=>{
+    console.log(rply);
+    if(err)
+        {
+            console.log(err);
+        }
+});                                    //saving details to redis
+res.redirect('/details');
+
 });
 app.post('/login',(req,res)=>{
 user.findOne({username:req.body.username}).then((docs)=>{
@@ -108,8 +123,25 @@ res.sendFile(__dirname+'/displaypic.html');
 app.post('/submitDetails',(req,res)=>{
 res.redirect('/displaypic');	
 });
-app.get('/details',(req,res)=>{	
+app.get('/details',(req,res)=>{    
 res.sendFile(__dirname+'/details.html');
+flag.findOneAndUpdate({},{$inc:{count:1}},{upsert:true,new:true}).then((docs)=>{
+    req.session.user1[count]=docs.count;
+user.findOneAndUpdate({username:userdetail.username},{count:docs.count},{upsert:true}).then((docs)=>{
+       if(docs){
+           
+           console.log(docs);
+       }
+       else
+           {
+               console.log("not found");
+           }
+       
+   },(err)=>{
+       console.log(err);
+   });     
+}); 
+       console.log("SESSIONDETAILS"+JSON.stringify(req.session.user1.count));
 });
 app.use(function(req,res,next){         
    if (req.session && req.session.user)
@@ -131,27 +163,7 @@ post=0;
 res.sendFile(__dirname+'/user.html');
 console.log("user1"+req.session);				
 });
-//app.post('/post',(req,res)=>{
-//res.send("oou");	
-//const id = crypto.randomBytes(16).toString("hex");
-//crypt.push(id);
-//console.log(crypt);	
-//if(crypt.length>1)
-//	{
-//		for(i=0;i<crypt.length;i++)
-//	{
-//	                  if(crypt[i]==id)
-//				{
-//					
-//					
-//				}
-//	}
-//		
-//	}
-//var filename=id +'.txt';
-//var read= fs.writeFileSync(filename,req.body.sub);
-//var post=1;	
-//});
+
              app.get('/profile',function(req,res){		
              res.sendFile(__dirname + "/profile.html");
 		    
@@ -159,9 +171,9 @@ console.log("user1"+req.session);
              });
                           
 
-                       
+var counte=0;                       
 io.on('connection',(socket)=>{
-    	
+counte=counte+1;
 if(userdetail)
 { 
 socket.username=userdetail.username;	   
@@ -430,7 +442,9 @@ function loader(n,arr)
 }
 }	
 socket.on('acceptrequests',(details)=>{
-console.log(details);    
+console.log(details);
+client.rpush(userdetail.username,details.to);
+client.rpush(details.to,userdetail.username);    
 docs.friends.push({username:details.to});
 docs.friendrequests.splice({username:details.to});
 user.findOneAndUpdate({username:details.to},{$pull:{requestlist:{username:details.from}}},{new:true}).then((docs)=>{
@@ -448,9 +462,12 @@ user.findOneAndUpdate({username:details.to},{$push:{friends:{username:details.fr
 	if(docs){console.log("updated")}
 },(err)=>{
  console.log(err);	
-});	
+});
+    
 });
 socket.on('file',(data)=>{
+
+    console.log("fileeeeeeeee"+JSON.stringify(data));
     var filePath;
     var contentPath;
     var dir="./"+userdetail.username+"/";
@@ -480,11 +497,16 @@ socket.on('file',(data)=>{
                       });  
                       });
                        
+                   }     
+                docs.save((docs)=>{if(docs){console.log("yooooo")}},(err)=>{console.log(err)});    
+               if(data.file.length<=0)
+                   {
+                       fs.writeFileSync(file,contentRead);
                    }
-                  
-                 
-                docs.save((docs)=>{if(docs){console.log("yooooo")}},(err)=>{console.log(err)});   
-               fs.writeFileSync(file,read);
+                   else
+                       {
+                            fs.writeFileSync(file,read);
+                       }
                   
                }
     fs.exists(file,function(exists){
@@ -516,8 +538,8 @@ socket.on('file',(data)=>{
 //var filename=id +'.txt';
 //return filename;	
 });
-socket.on('showposts',(value)=>{
-    
+//send posts to the friends               
+socket.on('showposts',(value)=>{    
  var postarr=[];
  var readypost={};       
  if(docs.posts)
@@ -548,18 +570,16 @@ socket.on('showposts',(value)=>{
   }
   count--;   
     }
-    else
-        {
-            
-        }
 });             
 });		
 }				 
-	socket.on('friendrequest',(friend)=>{	
+	socket.on('friendrequest',(friend)=>{ 
 	console.log("user"+friend);
 	var fiel="./"+friend.from+"/"+friend.from+".txt";	
 	if(friend.to in users)	
-	{users[friend.to].emit('immediateRequests',friend);}	
+	{
+             users[friend.to].emit('immediateRequests',friend);
+         }	
 	user.findOneAndUpdate({username:friend.from},{$push:{requestlist:{username:friend.to}}},{upsert:true,new:true}).then((docs)=>{if(docs){console.log("found")}},(e)=>{console.log(e)});	
 	user.findOneAndUpdate({username:friend.to},{$push:{friendrequests:{username:friend.from,displaypic:fiel,name:friend.sender}}},{upsert:true,new:true}).then((docs)=>{
 	if(docs)
@@ -576,6 +596,20 @@ socket.on('showposts',(value)=>{
 	delete users[socket.username]; 	
 	});    
 });
+io.on('connection',(socket)=>{
+             var pub=redis.createClient();
+         var sub=redis.createClient();
+         socket.on('c',(data)=>{
+         //sub.subscribe('chat1');    
+           console.log(data);
+             socket.emit('h',data);
+        // pub.publish('chat1',data);  
+         });
+//         sub.on('message',(message,channel)=>{
+//            socket.emit(message,channel); 
+//         });
+});
+
 
 	
 
