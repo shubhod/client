@@ -1,4 +1,3 @@
-<script>
 var socket=io();
 var flag=$('.notificationbox');
 var envo=$('#envo');
@@ -309,4 +308,3 @@ var openFile = function(file) {
 		
 				   }
 			   
-</script>
