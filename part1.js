@@ -231,6 +231,9 @@ $('.postbutton').off().on('click',(e)=>{
    
    console.log(user);
 
+   
+
+
 var count=0;
 var openFile = function(file) {		
    $('#postbox hr').after('<div id="x"style="height:110px">' + '<img  id="im" >'+'</div>');	
