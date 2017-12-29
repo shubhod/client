@@ -231,9 +231,6 @@ $('.postbutton').off().on('click',(e)=>{
    
    console.log(user);
 
-   
-</script>
-<script>
 var count=0;
 var openFile = function(file) {		
    $('#postbox hr').after('<div id="x"style="height:110px">' + '<img  id="im" >'+'</div>');	
@@ -291,8 +288,8 @@ var openFile = function(file) {
 			$('#x').html("<h1>file should be image type</h1>");
 		}
   };
-</script>
-<script>
+
+
   function toggleOverlay()
  {
 	var overlay = document.getElementById('overlay');
