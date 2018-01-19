@@ -1,0 +1,33 @@
+<html>
+    <body>
+    <div class="scro">
+<div class="div1"></div>
+<div class="div2"></div>
+<div class="div3"></div>    
+</div>
+    </body>
+</html>
+<style>
+.div1
+    {
+      height: 500px; 
+        background-color: red;
+    }
+    .div2
+    {
+        height: 500px;
+        background-color: blue;
+        
+    }
+    .div3
+    {
+        height: 500px;
+         background-color: black;
+    }
+
+</style>
+<script>
+var scrollLeft = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+console.log(scrollTop);
+</script>

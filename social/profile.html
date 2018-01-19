@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        body
+        {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+   <input type="text" id="txtPlaces1"  class="query" style="width: 250px" placeholder="Enter a location"/><br><br>
+   <input type="text" id="txtPlaces2"  class="query" style="width: 250px" placeholder="Enter a location"/><br><br>
+   <input type="text" id="txtPlaces3"  class="query" style="width: 250px" placeholder="Enter a location"/><br><br>
+   <form id="uploadForm" enctype="multipart/form-data"   action="/api/photo" method="post">
+    <input  type="file" name="userPhoto">
+    <input type="submit" value="Upload Image" name="submit">
+    <input type='text' id='random' name='random'><br>
+    <span id = "status"></span>
+
+<body>
+<script type="text/javascript">
+function auto()
+  {
+          var input=document.getElementsByClassName('query');
+          for(i=0;i<input.length;i++)
+          {
+              var places = new google.maps.places.Autocomplete(input[i]);               
+    
+               places.inputId = input[i].id;
+               places.addListener('place_changed', fillIn);  
+          }
+  function fillIn() {
+  console.log(this.inputId);
+  var place = this.getPlace();
+  console.log(place.place_id);
+  console.log(place);
+}        
+  }
+  </script> 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7GrG1qNJQBTjRWYn0LFq7TW96XnlTjHA&libraries=places&callback=auto"></script>
+
+    </form>  		
+</body>
+</html>

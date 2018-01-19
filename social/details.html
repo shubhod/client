@@ -1,0 +1,171 @@
+<html>
+<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/shubhod/client/master/details.css">
+<link href="https://fonts.googleapis.com/css?family=Work+Sans:300" rel="stylesheet">		
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+<link rel = "stylesheet" type ="text/css"  href="https://cdn.rawgit.com/shubhod/client/master/css/font-awesome.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
+<script src="/socket.io/socket.io.js"></script>	
+<body style="background-color:">
+<ul id="progressbar">
+<strong><li class="active">AccountSetup</li>
+<li>SocialProfiles</li>
+<li>PersonalDetails</li></strong>
+</ul>	
+<center><div class="box">
+<div class="box1">	
+<h1 style="color:#6F6666; font-family: 'Work Sans', sans-serif;">what you are</h1>
+<form class="occupation" action="">
+<center><strong><input style="margin-left: -100px; margin-bottom:10px; " type="radio" name="work" value="student" checked>Student<br>
+  <input type="radio" style="margin-left: -92px;margin-bottom:10px;" name="work" value="working">Working<br>
+  <input type="radio" style="margin-left: -115px;" name="work" value="none">None</strong> </center>
+  <button id="m" class="next">Submit</button>	
+</form>	
+</div>
+<form class="location" method="post" action="/submitDetails">
+<div class="studentbox" class="box">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input   id="workplace" name="workplace" class="locationclass" type="text" placeholder="&#xf0b1; StudyingAt.."><br><br>
+<input  id="livesin" class="locationclass" name="livesIn" type="text" placeholder="&#xf041; Lives in.."><br><br>
+<input  id="hometown" class="locationclass" name="hometown" type="text" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>		
+</div>
+<div class="workingbox">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input id="" id="workplace"class="locationclass" name="workplace" type="text" placeholder="&#xf0b1; WorkingAt.."><br><br>	
+<input id="livesin" class="locationclass" type="text" name="livesIn" placeholder="&#xf041; Lives in.."><br><br>
+<input id="hometown" class="locationclass" type="text" name="hometown" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>			
+</div>	
+<div class="none">
+<h2 style="padding-bottom:20px ">Add your locations</h2>
+<input  id="livesin"class="locationclass" type="text" name="livesIn" placeholder="&#xf041; Lives in.."><br><br>
+<input  id="hometown" class="locationclass" type="text" name="hometown" placeholder="&#xf015; Hometown..">
+<button id="d" class="next">next</button>		
+</div>		
+</form>			
+</div></center>	
+<script>
+$(document).ready(function(){
+$('.occupation').submit((e)=>{
+e.preventDefault();	
+$('.box1').hide();	
+var value=$('input[type=radio]:checked').val();	
+if(value=='student')
+	{
+	console.log(value);	
+	$('.studentbox').show();
+	$('.studentbox').addClass('animated fadeIn');
+		
+	}
+if(value=='working')
+	{ 
+	  console.log(value);	     
+	  $('.workingbox').show();
+	  $('.workingbox').addClass('animated fadeIn');	
+		
+	}
+if(value=="none")
+	{
+		 $('.none').show();
+	          $('.none').addClass('animated fadeIn');	
+	}
+
+});
+$('.location button').on('click',()=>{
+//$('.location').submit((e)=>{
+//e.preventDefault();	
+//});		
+//$('.location').hide();	
+$('.profilepic').addClass('animated fadeIn');
+$('#file').on('change',(e)=>{
+var filename=e.target.value.split('\\').pop();
+alert($("#file").val());	
+$('#lable').html(filename);
+var path=URL.createObjectURL(e.target.files[0]);
+$('img').attr('src',path).fadeIn();
+$('#userdummy').hide();	
+});
+});	
+});
+	
+</script> 
+<style>
+#file
+{
+  display:none;	
+   height: 50px;
+   	
+}	
+img
+{
+ display: none;
+ width:180px;
+ height:180px;
+}
+.container-narrow {
+  margin: 150px auto 50px auto;
+  max-width: 728px;
+}
+.pac-container:after{
+    content:none !important;
+}
+</style>	
+<script type="text/javascript">
+function auto()
+  {     
+          var input=document.getElementsByClassName('locationclass');
+          for(i=0;i<input.length;i++)
+          {
+              var places = new google.maps.places.Autocomplete(input[i]);         
+               places.inputId = input[i].id;
+	     	 
+               places.addListener('place_changed', fillIn);  
+          }
+};	  	  
+   
+  function fillIn() {
+  var socket=io();	  
+  var place = this.getPlace();	  
+  socket.on('connect',()=>{
+  console.log("connected");  
+  console.log(this.inputId); 
+     if(this.inputId=="workplace")
+  {          	
+               var  workplace={ 
+               name:place.address_components[0].long_name,
+               id:place.place_id
+	      }
+              socket.emit('workplace',workplace);	
+  
+  console.log(workplace);  
+  }
+  if(this.inputId=="livesin")
+    {
+           var  livesin={  
+	   name: place.address_components[0].long_name,
+            id:place.place_id  
+            }    
+            console.log(livesin);
+	   socket.emit('livesin',livesin);	
+    }
+  if(this.inputId=="hometown")
+        {
+         var hometown={	
+	name: place.address_components[0].long_name,
+         id:place.place_id		
+          }  
+	console.log(hometown); 
+	socket.emit('hometown',hometown);	        
+	}    
+  });	  
+
+  };
+	
+	
+</script> 	
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7GrG1qNJQBTjRWYn0LFq7TW96XnlTjHA&libraries=places&callback=auto"></script>	
+</body>
+</html>

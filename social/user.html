@@ -1,0 +1,330 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel = "stylesheet" type = "text/css"  href="https://cdn.rawgit.com/shubhod/client/master/profilepic.css">
+<script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Dosis:600|Lobster+Two|Pacifico" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="C:\Users\shubhodeep\social\public\profilepic.css"><link rel = "stylesheet" type = "text/css"  href="https://cdn.rawgit.com/shubhod/client/master/bootstrap.min.css">
+<link rel = "stylesheet" type = "text/css"  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">	
+<link href="https://fonts.googleapis.com/css?family=Lato:700|Lobster|Noto+Serif" rel="stylesheet">
+<script src="https://cdn.rawgit.com/shubhod/client/master/handlebars-v4.0.10.js"></script>
+<!--<script src="https://cdn.rawgit.com/shubhod/client/master/postbox.js"></script>    -->
+<script src="/socket.io/socket.io.js"></script>	
+<script src="https://cdn.rawgit.com/Codeinwp/carouFredSel-jQuery/master/jquery.carouFredSel-6.2.1.js" type="text/javascript"></script>
+ <script src="https://cdn.rawgit.com/Codeinwp/carouFredSel-jQuery/master/jquery.carouFredSel-6.2.1.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/customd/jquery-visible/master/jquery.visible.js"></script>
+<script src="https://rawgit.com/shubhod/client/master/socket.io-stream.js"></script> 
+<link rel = "stylesheet" type = "text/css"  href="font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="css\font-awesome.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<!--<script  src="https://rawgit.com/shubhod/client/master/newpar1.js"></script>   -->
+<body style="background-color:#f3f4f6">	   
+<nav style="background-color:white; border: 0;" class="navbar navbar-default">
+ <div id="navbarCollapse" class="collapse navbar-collapse"> 	    
+        <ul class="nav navbar-nav navbar-right">
+	        <li ><a style="" href="#"><b>home</b></a></li>
+            <li><a style="margin-right:80px; " href="#"><b>profile</b></a></li>   
+	   <li><textarea class="navbar_textarea" placeholder="&#xf002;"></textarea></li>     
+            <li style="padding-right:;"></li>    
+	        <li><div id="r1"><i style="padding-top: 12px;font-size:20px;  margin-right:15px;margin-left: 40px;" id="r1" value="envolope" class="fa fa-envelope" aria-hidden="true"></i></div></li>
+	   <li><div id="r2"><i style="padding-top: 12px; margin-right:15px; font-size:20px;" value="bell" id="r2" class="fa fa-bell" aria-hidden="true"></i></div></li>     
+	   <li><div id="r3"><i style="padding-top: 12px; ; font-size:20px;" value="plus" id="r3" class="fa fa-user-plus" aria-hidden="true"></i></div></li>    
+        </ul>
+ </div>
+</nav>
+<div class="notificationbox"><div id="envo"></div><div id="bell"></div><div id="frnd"></div></div>	
+<div class="row">
+<div style="background-color:;margin-left:50px;margin-right:60px;  height:500px;" class="col-md-2">	
+<div class="Rectangle_1">
+<center><div><img id="img"></div><i id="userdummy" class="fa fa-user-circle-o" aria-hidden="true"></i>
+<h1></h1>	
+</center>
+</div>
+</div>
+<div class="col-md-5" >
+<div class="container-fluid">	
+<div class="box" id="postbox">	
+<textarea  id="note" class="col-md-5sub"type="text"></textarea>
+<hr>
+<button class="postbutton" ><b>post</b></button>
+<input type='file' name="file-1[]" id="file-1" class="inputfile inputfile-1" onchange='openFile(event)'>
+<label for="file-1"><span>upload</span></label>
+	<div id="overlay"></div>
+	<div id="specialBox">
+  <p>Special box content ...</p> 
+  <button onmousedown="toggleOverlay()">Close Overlay</button>
+</div>
+</div>
+<div class="box" id="friendsugession"style="margin-top:20px; "></div>
+<br>
+<br>
+<div class="posts">   
+</div>
+</div>	
+</div>
+<div  style="background-color: height:500px;" class=col-md-2></div> 	
+</div>		
+</body>
+<script src="//cdn.jsdelivr.net/npm/pouchdb@6.4.1/dist/pouchdb.min.js"></script>
+<script src="scripts/main.js"></script>
+<script src="scripts/frontendPost.js"></script>
+<script>
+    $('.fa fa-angle-right').on('click',()=>{
+        alert('eded');
+    });
+</script>
+<style>
+.Rectangle_1 img
+{
+margin-top: 50px;
+border: 2px solid red;
+border-radius: 77px;	
+}
+#marginforBox
+{
+  margin-top: 40px;        
+}
+.resize {
+width: 530px;
+height:auto;
+}
+.posts .box img
+    {
+        margin-left: 10px;
+        margin-top: 60px;
+        margin-bottom: 70px;
+    }
+.box{
+    height:auto;
+    width: auto;
+    min-height:120px;
+    min-width: 550px !important;
+    height:auto !important;        /* for IE as it does not support min-height */
+    padding-bottom:2.5px;
+    }
+/*
+.resize {
+width: auto;
+height : 250px;
+}
+.posts .box img
+*/
+
+.deep
+{
+  border: 3px solid red;
+  height: 180px;
+  width:  150px;	
+}
+
+#x
+{
+		overflow: hidden;      
+		width: 110px;
+		padding-left: 0px;
+		display: table-cell;
+/*		margin-left: 4px;*/
+}
+.fbanner
+{
+width: 450px;
+font-size: 15px;	
+font-family: 'Roboto', sans-serif;	
+background:#ff5466;
+color: white;
+margin-bottom: 45px;	
+}
+.notificationbox
+{
+  background: white;
+  width: 450px;
+  margin-left: 900px;
+  margin-top: -20px;
+  display:none;
+  position:absolute;
+  box-shadow: 0px 0px  8px  1px #c5d5cb;
+  max-height:550px;
+  overflow-y:scroll;	
+  overflow-x: hidden;       
+}
+.insideNotification
+{
+	width:350px;
+	height: 80px;
+	margin-top:5px;	
+}
+.insideNotification hr
+{
+width: 122%;
+height: 1px;
+margin-left: auto;
+margin-right: auto;
+background-color:#DCDCDC;
+color:#f3f4f6;
+border: 0 none;
+margin-top: 0px;
+margin-bottom:1px;
+}
+#fd
+{
+  height:60px;
+  width:60px;
+  border: 1px solid red;
+  border-radius: 45px;
+  margin-top: -40px;	
+}
+#im
+{  
+   	
+   height:100%;
+   width: auto;
+   margin-bottom: 10px;
+   border: 1px solid black;
+   padding-right: -10px;  
+   position: sticky;
+	
+}
+ #data
+{
+	color:red;
+	font-size:12px;
+	margin-left: 80px;
+	width:10px;
+	margin-top: -15px;
+	      
+}
+
+#data #confirm
+{
+  position: fixed;
+  margin-left: 120px;	
+  margin-top:  -30px;
+  height: 30px;
+  width:100px;	
+  background-color:#ff5466;
+  border-radius: 2px;	
+ border: 1px solid #ff5466;
+ box-shadow: 0px 0px  2px  1px #c5d5cb;	
+ color: white;
+ font-size: 12px;	
+	
+}
+
+#data #delete
+{ position: fixed;
+  margin-left: 220px;
+  width:100px;	
+  margin-top:  -30px;
+  background-color:#5bd1b7;
+ height: 30px;
+ border-radius: 2px;	
+ border: 1px solid #5bd1b7;
+ box-shadow: 0px 0px  2px  1px #c5d5cb;	
+ color: white;
+ font-size: 12px;
+	
+}
+
+	#frnd h5
+	{
+	margin-bottom:-15px;
+	font-size: 20.5px;
+	font-family:"Roboto",sans-serif;
+	color:#ff5466;	
+		
+	}
+	#frnd{
+	display:none;
+	width: 400px;	
+	}
+	#bell{
+	  display:none;
+	  width: 400px;		
+	}
+	#envo{
+	display:none;
+	width: 400px;		
+	}
+	
+        
+	.post textarea
+	{
+	
+		min-height:40px;
+		height:auto !important;
+		
+	}
+.inputfile-1 + label {
+ background-color:#ff5466;
+ border-radius: 2px;	
+ border: 1px solid #ff5466;
+ box-shadow: 0px 0px  2px  1px #c5d5cb;	
+  margin-bottom: -9px;
+ color: whitesmoke;
+ font-size: 13px;font-family: 'Lobster Two', cursive;	
+/* text-shadow: 0px 0px 3px white;	*/
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 20px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  	
+}
+.inputfile + label {
+    max-width: 80%;
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.55rem 2.25rem;
+    /* 10px 20px */
+	
+}
+	div#overlay {
+	display: none;
+	z-index: 2;
+	background: #000;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	text-align: center;
+}
+div#specialBox {
+	display: none;
+	position: relative;
+	z-index: 3;
+	margin: 150px auto 0px auto;
+	width: 500px; 
+	height: 300px;
+	background: #FFF;
+	color: #000;
+}
+div#wrapper {
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	padding-left:24px;
+}
+    body
+    {
+        overflow-x: hidden;
+    }
+    
+.t
+    {
+        border: 2px solid red;
+        margin-top: 550px;
+        margin-bottom: 20px;
+        
+                  
+    }
+</style>	
+</html>

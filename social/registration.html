@@ -1,0 +1,63 @@
+<html>
+<head>
+<script src="/socket.io/socket.io.js "></script>
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Work+Sans:300" rel="stylesheet">	
+<link rel = "stylesheet" type = "text/css"  href="https://cdn.rawgit.com/shubhod/client/master/css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="https://raw.githubusercontent.com/shubhod/client/master/css/font-awesome.min.css" >	
+<link 	rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/shubhod/client/master/registration.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">	
+</head>
+<body>
+<div id="logo"><i class="fa fa-bolt" aria-hidden="true"></i>ourNetwork<br></div>
+<h2 id="afterlogo">connecting people . . .</h2>
+  <div class="box1">
+    <center>  
+    <div class="registrationBox">
+    <form class="signupform" method="post" action="signin"> 	    
+    <h2 style="color:#6F6666; font-family: 'Work Sans', sans-serif; margin-top: -20px; ">Welcome !</h2>	   
+    <input type="text" class="signup" name="name" placeholder="  name"><br><br>
+    <input type="email" name="email" class="signup" placeholder="  email"><br><br>
+    <input type="text" name="username" class="signup" placeholder="  username"><br><br>	   
+    <input type="password" class="signup" name="password" placeholder="  password"><br><br>
+    <input type="password" class="signup" name="confirmpassword"  placeholder="  confirmpassword"><br><br>
+    <input type="text" class="signup" name="phone" placeholder="  phone"><br><br>   
+    <button class="signinbutton">signin</button><br><br>
+    <span style="color:#6F6666; font-weight: 5px;font-family: 'FontAwesome','Josefin Sans', sans-serif;">Already have account ?</span>
+       <br><br><button class="loginbutton">login</button>	    
+    </form>	    
+    </div> 	   
+    </center>
+<div class="loginbox">	
+<form method="post" action="/login">
+<center>
+   <h2 style="color:#6F6666; font-family: 'Work Sans', sans-serif; margin-top: -px; padding-bottom: 10px;">Welcome Back!</h2>		
+<input type="text" name="username" class="signup" placeholder="  username"><br><br>	   
+    <input type="password" class="signup" name="password" placeholder="  password"><br><br>
+    <button class="signinbutton">login</button>		    	
+</center>
+   
+    </form> 	
+</div>
+</div>  
+ 	
+      <script>
+	$(document).ready(()=>{
+	$('i').addClass('animated bounce');
+		
+	     $('.loginbutton').on('click',()=>{
+	   $('.signupform').submit((e)=>{
+	    e.preventDefault();	   
+	   });
+            
+	
+           $('.loginbox').show();  		     
+           $('.loginbox').addClass('animated zoomInRight');
+	  $('.registrationBox').hide();	     
+           
+          });	
+});   
+   </script> 
+</body>
+</html>

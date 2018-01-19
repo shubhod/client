@@ -1,0 +1,28 @@
+<html>
+<body>
+<input id="file" type="file"/>
+<script type="text/javascript" src="caman.full.min.js"></script>
+<script src="https://rawgit.com/shubhod/client/master/socket.io-stream.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>	
+<script>
+var socket = io();
+socket.on('connect',()=>{
+console.log('connected');
+});
+window.onbeforeunload=confirmExit;
+var confirmExit=function()
+{
+    socket.emit('yo','hey');
+};
+//  $('#file').change(function(e) 
+//{
+//    var file = e.target.files[0];
+//    var stream = ss.createStream();
+//
+//    ss(socket).emit('file', stream, {size: file.size});
+//    ss.createBlobReadStream(file).pipe(stream);
+//  });
+</script>     
+</body>
+</html>

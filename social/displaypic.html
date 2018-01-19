@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>jQuery jQuery Awesome Cropper Demo</title>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> 
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link href="https://cdn.rawgit.com/shubhod/client/master/components/imgareaselect/css/imgareaselect-default.css" rel="stylesheet" media="screen">
+<link href="https://cdn.rawgit.com/shubhod/client/master/css/jquery.awesome-cropper.css" rel="stylesheet" media="screen"> 
+<script src="https://cdn.rawgit.com/shubhod/client/master/components/imgareaselect/scripts/jquery.imgareaselect.js"></script>
+<script src="https://cdn.rawgit.com/shubhod/client/master/build/jquery.awesome-cropper.js"></script>
+<script src="/socket.io/socket.io.js"></script>	
+</head>
+<body>
+ <form role="form" action="/api/photo" method="post">
+  <input id="sample_input" type="hidden" name="test[image]">
+	 <button>upload</button>
+ </form>
+<script>
+    $(document).ready(function () {
+        $('#sample_input').awesomeCropper(
+        { width: 120, height: 120, debug: true }
+        );
+      $('input[type="file"]').attr('name','file');
+	 $('.btn-group').on('click',()=>{
+	$('.awesome-cropper img').attr("class","border");
+         var imageAddr=$('#sample_input').val(); 
+	var socket=io();
+	socket.on('connect',()=>{
+	console.log("connected");	
+	socket.emit('displaypic',imageAddr);
+         });	 
+}); 
+	   
+	
+});
+ </script> 
+<style>
+.border
+{
+border: 6px solid red;	
+}	
+</style>	
+</body>
+</html>

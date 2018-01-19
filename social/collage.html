@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> freewall demo getting started</title>
+  <script src="jquery-1.10.2.min.js"></script>
+  <script src="freewall.js"></script>
+    <script>
+    $(function() {
+      var wall = new Freewall("#container");
+      wall.fitWidth();
+    });
+  </script>
+  <style type="text/css">
+    #container {
+      width: 50%;
+      margin: auto;
+      border: 2px solid red;
+    }
+    .item {
+      background: rgb(135, 199, 135);
+      width: 320px;
+      height: 120px;
+    }
+    .item1 {
+      background: rgb(135, 199, 135);
+      width: 310px;
+      height: 20px;
+    }
+      .item2 {
+      background: rgb(135, 199, 135);
+      width: 220px;
+      height: 120px;
+    }
+      .item3 {
+      background: rgb(135, 199, 135);
+      width: 420px;
+      height: 320px;
+    }
+      .item4 {
+      background: rgb(135, 199, 135);
+      width: 520px;
+      height: 120px;
+    }
+      .item5 {
+      background: rgb(135, 199, 135);
+      width: 320px;
+      height: 220px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="item1"></div>
+    <div class="item2"></div>
+    <div class="item3"></div>
+    <div class="item4"></div>
+    <div class="item5"></div>
+    <div class="item6"></div>
+    </div>
+</body>
+</html>
+		

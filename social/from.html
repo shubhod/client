@@ -1,0 +1,25 @@
+ <html>
+     <body>
+         <input id="d" type="text">
+         <button>deep</button>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+         <script src="/socket.io/socket.io.js"></script>
+         <script>
+         var socket=io();
+         socket.on('connect',(socket)=>{
+             console.log("connected");
+         });
+                 $('button').on('click',()=>{
+               var x=$('#d').val();
+               socket.emit('chat',x);       
+               });
+             console.log('connected'); 
+             socket.on('chat',(data)=>{
+             console.log(data);
+             });
+            socket.on('chat1',(data)=>{
+            console.log(data); 
+            }); 
+         </script>
+         </body>
+</html>
